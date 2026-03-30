@@ -1,0 +1,86 @@
+services:
+  scheduler:
+    container_name: scheduler
+    build:
+      context: ./scheduler
+      dockerfile: Dockerfile
+      network: host
+    image: safe-ai-coder/scheduler:latest
+    volumes:
+      - ./scheduler/config.yaml:/bin/scheduler/config.yaml:ro
+    depends_on:
+      - worker
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    networks:
+      - safe-ai-coder
+
+  worker:
+    container_name: worker
+    build:
+      context: ./go-services
+      dockerfile: docker/Dockerfile
+      network: host
+      args:
+        SERVICE_NAME: worker
+    image: safe-ai-coder/worker:latest
+    environment:
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY}
+    depends_on:
+      - ollama
+    volumes:
+      - ./go-services/applications/worker/config/config.yml:/config.yml:ro
+      - worker_data:/app/worker
+      - coder_data:/app/coder
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./docker-compose.yml:/docker-compose.yml:ro
+    working_dir: /
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    networks:
+      - safe-ai-coder
+
+  coder:
+    container_name: coder
+    build:
+      context: ./coder
+      dockerfile: Dockerfile
+      network: host
+    image: safe-ai-coder/coder:latest
+    profiles:
+      - tools
+    volumes:
+      - coder_data:/app/coder
+    networks:
+      - safe-ai-coder
+
+  ollama:
+    container_name: ollama
+    image: ollama/ollama:latest
+    environment:
+      OLLAMA_API_KEY: ${OLLAMA_API_KEY}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
+    volumes:
+      - ollama_data:/root/.ollama
+    ports:
+      - "11434:11434"
+    networks:
+      - default
+      - safe-ai-coder
+
+networks:
+  safe-ai-coder:
+    driver: bridge
+
+volumes:
+  worker_data:
+  coder_data:
+  ollama_data:

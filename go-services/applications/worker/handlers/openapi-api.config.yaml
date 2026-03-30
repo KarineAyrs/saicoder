@@ -1,0 +1,6 @@
+package: handlers
+output: openapi_api.gen.go
+generate:
+  strict-server: true
+  echo-server: true
+  embedded-spec: true

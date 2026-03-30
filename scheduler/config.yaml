@@ -1,0 +1,41 @@
+logger:
+  enable: true
+  name: scheduler-logger
+  level: DEBUG
+  output: stderr
+
+closer:
+  graceful_shutdown_timeout: 5  # seconds
+
+storage:
+  type: inmemory
+
+manager:
+  endpoints:
+    - "http://worker:8000"
+  worker_client:
+    enable_mock: false
+    http:
+      timeout:
+        timeout: 5  # seconds
+      retry:
+        total: 3
+        backoff_factor: 0
+        backoff_max: 10
+
+auth:
+  enable_mock: true
+
+admin:
+  host: 0.0.0.0
+  port: 8081
+  rate_limiter:
+    enable: false
+
+public:
+  host: 0.0.0.0
+  port: 8080
+  rate_limiter:
+    enable: false
+    limit: 60
+    window: 60

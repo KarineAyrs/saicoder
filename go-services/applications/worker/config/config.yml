@@ -1,0 +1,21 @@
+ops:
+  http_addr: "0.0.0.0:8001"
+
+api:
+  http_addr: "0.0.0.0:8000"
+  rate_limit: 10
+
+log_level: "debug"
+
+scheduler_api:
+  url: "http://scheduler:8081"
+  request_timeout: 30s
+
+coder:
+  cache_dir: /app/worker/cache
+  stats_dir: /app/worker/stats
+  code_dir: /app/coder/code
+  statement_filename: statement.md
+  model_name: gpt-oss:20b-cloud
+  ollama_base_url: "http://ollama:11434"
+  with_checker: true

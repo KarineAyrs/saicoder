@@ -1,0 +1,14 @@
+**/.git
+**/.DS_Store
+**/.idea
+
+
+# Docker
+/docker
+.dockerignore
+
+README.md
+
+build/
+bin/
+outputs

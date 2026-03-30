@@ -1,0 +1,45 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: scheduler.openapi
+servers:
+  - url: '{scheme}://{domain}'
+    description: Base URL
+    variables:
+      scheme:
+        default: https
+        description: Schema
+        enum:
+          - https
+          - http
+paths:
+  /task/{task_id}:
+    patch:
+      operationId: update-task
+      parameters:
+        - name: task_id
+          in: path
+          schema:
+            type: string
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Task'
+      responses:
+        '200':
+          description: task created
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          type: string
+      required:
+        - status
+        - result

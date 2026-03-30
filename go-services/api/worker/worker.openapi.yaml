@@ -1,0 +1,39 @@
+openapi: 3.0.0
+info:
+  version: '1.0'
+  title: worker.openapi
+servers:
+  - url: '{scheme}://{domain}'
+    description: Base URL
+    variables:
+      scheme:
+        default: https
+        description: Schema
+        enum:
+          - https
+          - http
+paths:
+  /submit:
+    post:
+      operationId: submit
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submit'
+      responses:
+        '201':
+          description: task created
+
+components:
+  schemas:
+    Submit:
+      type: object
+      properties:
+        statement:
+          type: string
+        task_id:
+          type: string
+      required:
+        - statement
+        - task_id
